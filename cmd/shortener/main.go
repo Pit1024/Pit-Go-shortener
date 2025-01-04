@@ -24,7 +24,7 @@ func run() error {
 var URLtoken map[string]string = map[string]string{
 
 	"shortener": "http://localhost:8080/EwHXdJfB",
-	"full":      "https://practicum.yandex.ru/",
+	"full":      "http://practicum.yandex.ru/",
 }
 
 func POSThook(w http.ResponseWriter, r *http.Request) {
