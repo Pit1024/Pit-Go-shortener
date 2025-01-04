@@ -15,7 +15,10 @@ func main() {
 // функция run будет полезна при инициализации зависимостей сервера перед запуском
 func run() error {
 
-	return http.ListenAndServe(`:8080`, http.HandlerFunc(webhook))
+	mux := http.NewServeMux()
+	mux.HandleFunc(`/`, POSThook)
+	mux.HandleFunc(`/EwHXdJfB`, GEThook)
+	return http.ListenAndServe(`:8080`, mux)
 }
 
 var URLtoken map[string]string = map[string]string{
@@ -24,21 +27,29 @@ var URLtoken map[string]string = map[string]string{
 	"full":      "https://practicum.yandex.ru/",
 }
 
-func webhook(w http.ResponseWriter, r *http.Request) {
+func POSThook(w http.ResponseWriter, r *http.Request) {
 
-	if r.Method == http.MethodPost && r.Header.Get("Content-Type") == "text/plain" {
-		// проверка на POST-запросы
-
-		w.Header().Set("Content-Type", "text/plain")
-		w.WriteHeader(201)
-		w.Write([]byte(URLtoken["shortener"]))
-	} else if r.Method == http.MethodGet {
-
-		w.WriteHeader(307)
-		w.Write([]byte(URLtoken["full"]))
-	} else {
-
+	if r.Method != http.MethodPost || r.Header.Get("Content-Type") != "text/plain" {
+		// проверка на POST-запросы и на заголовок
 		http.Error(w, "", 400)
+		return
 	}
+
+	w.Header().Set("Content-Type", "text/plain")
+	w.WriteHeader(201)
+	w.Write([]byte(URLtoken["shortener"]))
+
+}
+
+func GEThook(w http.ResponseWriter, r *http.Request) {
+
+	if r.Method != http.MethodGet {
+		// проверка на GET-запросы
+		http.Error(w, "", 400)
+		return
+	}
+
+	w.WriteHeader(307)
+	w.Write([]byte(URLtoken["full"]))
 
 }
