@@ -17,14 +17,14 @@ func run() error {
 
 	mux := http.NewServeMux()
 	mux.HandleFunc(`/`, POSThook)
-	mux.HandleFunc(`/EwHXdJfB`, GEThook)
+	mux.HandleFunc(`/jtcyjxud76icuy`, GEThook)
 	return http.ListenAndServe(`:8080`, mux)
 }
 
 var URLtoken map[string]string = map[string]string{
 
-	"shortener": "http://localhost:8080/EwHXdJfB",
-	"full":      "http://practicum.yandex.ru/",
+	"shortener": "http://knifnivc.net/jtcyjxud76icuy", //"http://localhost:8080/EwHXdJfB",
+	"full":      "http://knifnivc.net/",
 }
 
 func POSThook(w http.ResponseWriter, r *http.Request) {
