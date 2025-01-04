@@ -29,7 +29,7 @@ var URLtoken map[string]string = map[string]string{
 
 func POSThook(w http.ResponseWriter, r *http.Request) {
 
-	if r.Method != http.MethodPost || r.Header.Get("Content-Type") != "text/plain" {
+	if r.Method != http.MethodPost { //|| r.Header.Get("Content-Type") != "text/plain" {
 		// проверка на POST-запросы и на заголовок
 		http.Error(w, "", 400)
 		return
@@ -49,6 +49,7 @@ func GEThook(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	w.Header().Set("Location", URLtoken["full"])
 	w.WriteHeader(307)
 	w.Write([]byte(URLtoken["full"]))
 
