@@ -3,6 +3,7 @@ package main
 import (
 	"net"
 	"net/http"
+	"strings"
 )
 
 // функция main вызывается автоматически при запуске приложения
@@ -18,27 +19,21 @@ func run() error {
 	return http.ListenAndServe(`:8080`, http.HandlerFunc(webhook))
 }
 
-var URLmap map[string][]string
+var URLmap []string
 
 // функция webhook — обработчик HTTP-запроса
 func webhook(w http.ResponseWriter, r *http.Request) {
 
-	// парсим переданный шаблон, проверяем на ошибки
-	host, port, err := net.SplitHostPort(r.Host)
-	if err != nil {
+	// сохраняем пришедший адрес и его данные
+	URLmap = []string{r.Host, strings.ReplaceAll(r.RequestURI, `/`, "")}
 
-		http.Error(w, "", 400)
-	}
-
-	// сохраняем пришедший адрес
-	URLmap = map[string][]string{"shortener": {host, port}}
-
-	// Если запрос POST и нет /{id}, то выдаем хост и порт и статус 201
-	if r.Method == http.MethodPost && port == "" {
-		http.Redirect(w, r, host, 201)
+	// Если запрос POST и нет /{id}, то выдаем сокращенный хост и статус 201
+	if r.Method == http.MethodPost && URLmap[1] == "" {
+		http.Redirect(w, r, URLmap[1], 201)
+		body += 
 
 		// Если запрос GET и есть /{id}, то выдаем обычный хост и статус 201
-	} else if r.Method == http.MethodGet && port != "" {
+	} else if r.Method == http.MethodGet && URLmap[1] != "" {
 		http.Redirect(w, r, host, 307)
 
 		// в любом другом случае ошибка 400
