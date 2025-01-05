@@ -1,7 +1,6 @@
 package main
 
 import (
-	"net"
 	"net/http"
 	"strings"
 )
@@ -30,11 +29,10 @@ func webhook(w http.ResponseWriter, r *http.Request) {
 	// Если запрос POST и нет /{id}, то выдаем сокращенный хост и статус 201
 	if r.Method == http.MethodPost && URLmap[1] == "" {
 		http.Redirect(w, r, URLmap[1], 201)
-		body += 
 
 		// Если запрос GET и есть /{id}, то выдаем обычный хост и статус 201
 	} else if r.Method == http.MethodGet && URLmap[1] != "" {
-		http.Redirect(w, r, host, 307)
+		http.Redirect(w, r, r.Host, 307)
 
 		// в любом другом случае ошибка 400
 	} else {
